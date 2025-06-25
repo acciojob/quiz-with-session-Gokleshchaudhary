@@ -51,6 +51,11 @@ function renderQuestions() {
 
         questionsContainer.appendChild(questionElement);
     });
+
+    // Add event listener to save progress on change
+    document.querySelectorAll("input[type='radio']").forEach(input => {
+        input.addEventListener('change', saveProgress);
+    });
 }
 
 // Function to save progress to session storage
@@ -107,3 +112,26 @@ window.onload = () => {
         document.getElementById("score").innerText = `Your score is ${finalScore} out of ${questions.length}.`;
     }
 };
+
+// Cypress Test Cases - Should be in a separate file
+describe('Quiz Application', () => {
+    beforeEach(() => {
+        cy.visit('index.html'); // Adjust the path as necessary
+    });
+
+    it('Checking questions and UI elements', () => {
+        cy.get('div#questions > div').should('have.length', 5); // Check for 5 questions
+        cy.get('div#questions > div').each(($el, index) => {
+            cy.wrap($el).find('p').should('contain.text', questions[index].question);
+            cy.wrap($el).find('input[type="radio"]').should('have.length', 4); // Check for 4 options
+        });
+    });
+
+    it('Checking if stored in session', () => {
+        cy.get('input[type="radio"]').first().check(); // Check the first radio button
+        cy.window().then((win) => {
+            const progress = JSON.parse(win.sessionStorage.getItem("progress"));
+            expect(progress).to.have.property('question-0', '0'); // Adjust according to your stored values
+        });
+    });
+});
