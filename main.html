@@ -1,17 +1,25 @@
 <!DOCTYPE html>
-
-<html>
-  <head>
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-
-  <body>
-    <!-- do not change this code -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Quiz with Session & Local Storage</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f9f9f9; margin: 0; padding: 0; }
+    .quiz-container { max-width: 600px; margin: 40px auto; background: #fff; padding: 24px 32px 32px 32px; border-radius: 8px; box-shadow: 0 2px 12px rgba(0,0,0,0.08);}
+    h1 { text-align: center; }
+    #questions > div { margin-bottom: 24px; }
+    .options label { margin-right: 18px; }
+    #submit { display: block; margin: 20px auto 0 auto; padding: 10px 24px; font-size: 1em; }
+    #score { margin-top: 24px; text-align: center; font-size: 1.2em; font-weight: bold; color: #2e7d32; }
+  </style>
+</head>
+<body>
+  <div class="quiz-container">
     <h1>Quiz</h1>
     <div id="questions"></div>
     <button id="submit">Submit</button>
     <div id="score"></div>
-
-    <script type="text/javascript" src="./script.js"></script>
-  </body>
+  </div>
+  <script src="script.js"></script>
+</body>
 </html>

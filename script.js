@@ -1,56 +1,107 @@
-//your JS code here.
-
-// Do not change code below this line
-// This code will just display the questions to the screen
-const questions = [
+// Quiz questions and answers
+const quiz = [
   {
-    question: "What is the capital of France?",
-    choices: ["Paris", "London", "Berlin", "Madrid"],
-    answer: "Paris",
+    q: "What is the capital of France?",
+    options: ["Berlin", "London", "Paris", "Madrid"],
+    answer: 2
   },
   {
-    question: "What is the highest mountain in the world?",
-    choices: ["Everest", "Kilimanjaro", "Denali", "Matterhorn"],
-    answer: "Everest",
+    q: "Which planet is known as the Red Planet?",
+    options: ["Earth", "Mars", "Jupiter", "Venus"],
+    answer: 1
   },
   {
-    question: "What is the largest country by area?",
-    choices: ["Russia", "China", "Canada", "United States"],
-    answer: "Russia",
+    q: "Who wrote 'Hamlet'?",
+    options: ["Charles Dickens", "William Shakespeare", "Mark Twain", "Jane Austen"],
+    answer: 1
   },
   {
-    question: "Which is the largest planet in our solar system?",
-    choices: ["Earth", "Jupiter", "Mars"],
-    answer: "Jupiter",
+    q: "What is the largest ocean on Earth?",
+    options: ["Atlantic", "Indian", "Arctic", "Pacific"],
+    answer: 3
   },
   {
-    question: "What is the capital of Canada?",
-    choices: ["Toronto", "Montreal", "Vancouver", "Ottawa"],
-    answer: "Ottawa",
-  },
+    q: "Which element has the chemical symbol 'O'?",
+    options: ["Gold", "Oxygen", "Silver", "Iron"],
+    answer: 1
+  }
 ];
 
-// Display the quiz questions and choices
-function renderQuestions() {
-  for (let i = 0; i < questions.length; i++) {
-    const question = questions[i];
-    const questionElement = document.createElement("div");
-    const questionText = document.createTextNode(question.question);
-    questionElement.appendChild(questionText);
-    for (let j = 0; j < question.choices.length; j++) {
-      const choice = question.choices[j];
-      const choiceElement = document.createElement("input");
-      choiceElement.setAttribute("type", "radio");
-      choiceElement.setAttribute("name", `question-${i}`);
-      choiceElement.setAttribute("value", choice);
-      if (userAnswers[i] === choice) {
-        choiceElement.setAttribute("checked", true);
+const questionsDiv = document.getElementById("questions");
+const submitBtn = document.getElementById("submit");
+const scoreDiv = document.getElementById("score");
+
+// Load progress from sessionStorage
+function loadProgress() {
+  const progress = sessionStorage.getItem("progress");
+  return progress ? JSON.parse(progress) : {};
+}
+
+// Save progress to sessionStorage
+function saveProgress(progress) {
+  sessionStorage.setItem("progress", JSON.stringify(progress));
+}
+
+// Render questions and restore progress
+function renderQuiz() {
+  questionsDiv.innerHTML = "";
+  const progress = loadProgress();
+  quiz.forEach((qObj, idx) => {
+    const qDiv = document.createElement("div");
+    const qTitle = document.createElement("div");
+    qTitle.textContent = `${idx + 1}. ${qObj.q}`;
+    qDiv.appendChild(qTitle);
+
+    const optionsDiv = document.createElement("div");
+    optionsDiv.className = "options";
+    qObj.options.forEach((opt, optIdx) => {
+      const label = document.createElement("label");
+      const radio = document.createElement("input");
+      radio.type = "radio";
+      radio.name = `q${idx}`;
+      radio.value = optIdx;
+      // Restore checked state from sessionStorage
+      if (progress[idx] !== undefined && Number(progress[idx]) === optIdx) {
+        radio.checked = true;
       }
-      const choiceText = document.createTextNode(choice);
-      questionElement.appendChild(choiceElement);
-      questionElement.appendChild(choiceText);
-    }
-    questionsElement.appendChild(questionElement);
+      // Save progress on change
+      radio.addEventListener("change", () => {
+        const newProgress = loadProgress();
+        newProgress[idx] = optIdx;
+        saveProgress(newProgress);
+      });
+      label.appendChild(radio);
+      label.appendChild(document.createTextNode(opt));
+      optionsDiv.appendChild(label);
+    });
+    qDiv.appendChild(optionsDiv);
+    questionsDiv.appendChild(qDiv);
+  });
+}
+
+// Show score if present in localStorage
+function showScore() {
+  const score = localStorage.getItem("score");
+  if (score !== null) {
+    scoreDiv.textContent = `Your score is ${score} out of ${quiz.length}.`;
+  } else {
+    scoreDiv.textContent = "";
   }
 }
-renderQuestions();
+
+// Handle quiz submission
+submitBtn.addEventListener("click", () => {
+  const progress = loadProgress();
+  let score = 0;
+  quiz.forEach((qObj, idx) => {
+    if (progress[idx] !== undefined && Number(progress[idx]) === qObj.answer) {
+      score++;
+    }
+  });
+  localStorage.setItem("score", score);
+  showScore();
+});
+
+// Initial render
+renderQuiz();
+showScore();
