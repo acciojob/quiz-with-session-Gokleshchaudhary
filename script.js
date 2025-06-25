@@ -1,7 +1,7 @@
 const quiz = [
   {
-    q: "What is the capital of France?",
-    options: ["Berlin", "London", "Paris", "Madrid"],
+    q: "What is the highest mountain in the world?",
+    options: ["K2", "Kangchenjunga", "Mount Everest", "Makalu"],
     answer: 2
   },
   {
@@ -26,75 +26,4 @@ const quiz = [
   }
 ];
 
-const questionsDiv = document.getElementById("questions");
-const submitBtn = document.getElementById("submit");
-const scoreDiv = document.getElementById("score");
-
-function loadProgress() {
-  const progress = sessionStorage.getItem("progress");
-  return progress ? JSON.parse(progress) : {};
-}
-
-function saveProgress(progress) {
-  sessionStorage.setItem("progress", JSON.stringify(progress));
-}
-
-function renderQuiz() {
-  questionsDiv.innerHTML = "";
-  const progress = loadProgress();
-  quiz.forEach((qObj, idx) => {
-    const qDiv = document.createElement("div");
-    const qTitle = document.createElement("div");
-    // FIX: No numbering
-    qTitle.textContent = qObj.q;
-    qDiv.appendChild(qTitle);
-
-    const optionsDiv = document.createElement("div");
-    optionsDiv.className = "options";
-    qObj.options.forEach((opt, optIdx) => {
-      const label = document.createElement("label");
-      const radio = document.createElement("input");
-      radio.type = "radio";
-      radio.name = `q${idx}`;
-      radio.value = optIdx;
-      // Restore checked state from sessionStorage
-      if (progress[idx] !== undefined && Number(progress[idx]) === optIdx) {
-        radio.checked = true;
-      }
-      radio.addEventListener("change", () => {
-        const newProgress = loadProgress();
-        newProgress[idx] = optIdx;
-        saveProgress(newProgress);
-      });
-      label.appendChild(radio);
-      label.appendChild(document.createTextNode(opt));
-      optionsDiv.appendChild(label);
-    });
-    qDiv.appendChild(optionsDiv);
-    questionsDiv.appendChild(qDiv);
-  });
-}
-
-function showScore() {
-  const score = localStorage.getItem("score");
-  if (score !== null) {
-    scoreDiv.textContent = `Your score is ${score} out of ${quiz.length}.`;
-  } else {
-    scoreDiv.textContent = "";
-  }
-}
-
-submitBtn.addEventListener("click", () => {
-  const progress = loadProgress();
-  let score = 0;
-  quiz.forEach((qObj, idx) => {
-    if (progress[idx] !== undefined && Number(progress[idx]) === qObj.answer) {
-      score++;
-    }
-  });
-  localStorage.setItem("score", score);
-  showScore();
-});
-
-renderQuiz();
-showScore();
+// ...rest of your script.js code remains the same...
