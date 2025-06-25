@@ -112,8 +112,6 @@ window.onload = () => {
         document.getElementById("score").innerText = `Your score is ${finalScore} out of ${questions.length}.`;
     }
 };
-
-// Cypress Test Cases - Should be in a separate file
 describe('Quiz Application', () => {
     beforeEach(() => {
         cy.visit('index.html'); // Adjust the path as necessary
