@@ -1,4 +1,3 @@
-// Quiz questions and answers
 const quiz = [
   {
     q: "What is the capital of France?",
@@ -31,25 +30,23 @@ const questionsDiv = document.getElementById("questions");
 const submitBtn = document.getElementById("submit");
 const scoreDiv = document.getElementById("score");
 
-// Load progress from sessionStorage
 function loadProgress() {
   const progress = sessionStorage.getItem("progress");
   return progress ? JSON.parse(progress) : {};
 }
 
-// Save progress to sessionStorage
 function saveProgress(progress) {
   sessionStorage.setItem("progress", JSON.stringify(progress));
 }
 
-// Render questions and restore progress
 function renderQuiz() {
   questionsDiv.innerHTML = "";
   const progress = loadProgress();
   quiz.forEach((qObj, idx) => {
     const qDiv = document.createElement("div");
     const qTitle = document.createElement("div");
-    qTitle.textContent = `${idx + 1}. ${qObj.q}`;
+    // FIX: No numbering
+    qTitle.textContent = qObj.q;
     qDiv.appendChild(qTitle);
 
     const optionsDiv = document.createElement("div");
@@ -64,7 +61,6 @@ function renderQuiz() {
       if (progress[idx] !== undefined && Number(progress[idx]) === optIdx) {
         radio.checked = true;
       }
-      // Save progress on change
       radio.addEventListener("change", () => {
         const newProgress = loadProgress();
         newProgress[idx] = optIdx;
@@ -79,7 +75,6 @@ function renderQuiz() {
   });
 }
 
-// Show score if present in localStorage
 function showScore() {
   const score = localStorage.getItem("score");
   if (score !== null) {
@@ -89,7 +84,6 @@ function showScore() {
   }
 }
 
-// Handle quiz submission
 submitBtn.addEventListener("click", () => {
   const progress = loadProgress();
   let score = 0;
@@ -102,6 +96,5 @@ submitBtn.addEventListener("click", () => {
   showScore();
 });
 
-// Initial render
 renderQuiz();
 showScore();
