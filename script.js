@@ -1,8 +1,8 @@
 const quizData = [
   {
-    question: "What is the highest mountain in the world?",
-    options: ["K2", "Mount Everest", "Kangchenjunga", "Makalu"],
-    answer: 1
+    question: "What is the capital of France?",
+    options: ["Paris", "Berlin", "Rome", "Madrid"],
+    answer: 0
   },
   {
     question: "Which planet is known as the Red Planet?",
@@ -32,7 +32,7 @@ const scoreDisplay = document.getElementById("score");
 
 function loadProgress() {
   const progress = JSON.parse(sessionStorage.getItem("progress") || "{}");
-  questionsContainer.innerHTML = ""; // clear previous questions
+  questionsContainer.innerHTML = "";
 
   quizData.forEach((q, i) => {
     const div = document.createElement("div");
@@ -50,13 +50,20 @@ function loadProgress() {
 
     questionsContainer.appendChild(div);
   });
+
+  // Re-bind change listeners to inputs
+  document.querySelectorAll("input[type='radio']").forEach(input => {
+    input.addEventListener("change", saveProgress);
+  });
 }
 
 function saveProgress() {
   const progress = {};
   quizData.forEach((q, i) => {
     const selected = document.querySelector(`input[name='question${i}']:checked`);
-    if (selected) progress[i] = parseInt(selected.value);
+    if (selected) {
+      progress[i] = parseInt(selected.value);
+    }
   });
   sessionStorage.setItem("progress", JSON.stringify(progress));
 }
@@ -83,11 +90,10 @@ submitButton.addEventListener("click", () => {
   showScore(score);
 });
 
-questionsContainer.addEventListener("change", saveProgress);
-
-// Load everything on startup
+// On load
 loadProgress();
 
+// Show previous score if available
 const savedScore = localStorage.getItem("score");
 if (savedScore !== null) {
   showScore(savedScore);
