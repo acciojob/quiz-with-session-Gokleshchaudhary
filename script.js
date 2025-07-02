@@ -1,8 +1,8 @@
 const quizData = [
   {
-    question: "What is the capital of France?",
-    options: ["Paris", "Berlin", "Rome", "Madrid"],
-    answer: 0
+    question: "What is the highest mountain in the world?",
+    options: ["K2", "Mount Everest", "Kangchenjunga", "Makalu"],
+    answer: 1
   },
   {
     question: "Which planet is known as the Red Planet?",
@@ -32,16 +32,17 @@ const scoreDisplay = document.getElementById("score");
 
 function loadProgress() {
   const progress = JSON.parse(sessionStorage.getItem("progress") || "{}");
+  questionsContainer.innerHTML = ""; // clear previous questions
 
   quizData.forEach((q, i) => {
     const div = document.createElement("div");
     div.innerHTML = `<div class='question'>${q.question}</div>`;
 
     q.options.forEach((option, j) => {
-      const checked = progress[i] == j ? "checked" : "";
+      const isChecked = progress[i] === j ? "checked" : "";
       div.innerHTML += `
         <label>
-          <input type="radio" name="question${i}" value="${j}" ${checked}>
+          <input type="radio" name="question${i}" value="${j}" ${isChecked}>
           ${option}
         </label><br/>
       `;
@@ -82,14 +83,12 @@ submitButton.addEventListener("click", () => {
   showScore(score);
 });
 
-// Re-populate questions and selections
+questionsContainer.addEventListener("change", saveProgress);
+
+// Load everything on startup
 loadProgress();
 
-// Show score from local storage if it exists
 const savedScore = localStorage.getItem("score");
 if (savedScore !== null) {
   showScore(savedScore);
 }
-
-// Save selection changes
-questionsContainer.addEventListener("change", saveProgress);
